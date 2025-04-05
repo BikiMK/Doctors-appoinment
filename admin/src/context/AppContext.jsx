@@ -46,4 +46,24 @@ const AppContextProvider = (props) => {
   );
 };
 
+
+// ADDitional
+const getDoctorsData = useCallback(async () => {
+  try {
+      console.log("Fetching doctors from API...");
+      const response = await axios.get(`${backendUrl}/api/admin/doctors`);
+      console.log("API Response:", response.data); // Log the full response
+      if (response.data.success) {
+          setDoctors(response.data.doctors);
+          console.log("Doctors List:", response.data.doctors); // Log the doctors list
+      } else {
+          toast.error(response.data.message);
+      }
+  } catch (error) {
+      console.error("Error fetching doctors:", error);
+      toast.error(error.response?.data?.message || "Error fetching doctors.");
+  }
+}, [backendUrl]);
+
+
 export default AppContextProvider;

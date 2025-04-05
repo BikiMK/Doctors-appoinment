@@ -10,7 +10,7 @@ import {
 import authAdmin from "../middlewares/authAdmin.js";
 import upload from "../middlewares/multer.js";
 import { changeAvailability } from "../controllers/doctorController.js";
-
+router.get("/doctors", allDoctors);
 const adminRouter = express.Router();
 
 // Admin Login

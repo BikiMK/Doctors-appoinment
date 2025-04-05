@@ -55,11 +55,11 @@ const addDoctor = async (req, res) => {
 // API to Get All Doctors
 const allDoctors = async (req, res) => {
   try {
-    const doctors = await doctorModel.find({}).select("-password"); // Exclude password
-    res.json({ success: true, doctors });
+      const doctors = await doctorModel.find().select("-password"); // Exclude password
+      res.json({ success: true, doctors });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+      console.error(error);
+      res.json({ success: false, message: error.message });
   }
 };
 

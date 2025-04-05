@@ -17,19 +17,9 @@ const AppContextProvider = ({ children }) => {
     const getDoctorsData = useCallback(async () => {
         try {
             console.log("Fetching doctors from API...");
-            
-            const response = await axios.get(`${backendUrl}/api/doctor/list`);
-            
-            console.log("Full API Response:", response);  // 🔍 Log full response
-            
-            if (response.status !== 200) {
-                console.error("Unexpected API response:", response);
-                toast.error("Unexpected API response!");
-                return;
-            }
-    
+            const response = await axios.get(`${backendUrl}/api/admin/doctors`);
+            console.log("API Response:", response);
             if (response.data.success) {
-                console.log("Doctors List:", response.data.doctors);  // 🔍 Log extracted data
                 setDoctors(response.data.doctors);
             } else {
                 toast.error(response.data.message);
