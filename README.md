@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MediSync 
 
 Welcome to **MediSync** – a web application designed to streamline doctor appointments and healthcare management, enhancing communication between patients and healthcare providers while also integrating Gen AI for doctor recommendation and prescription data extraction.
@@ -27,3 +28,6 @@ Welcome to **MediSync** – a web application designed to streamline doctor appo
 - **AI Integrations:** Gemini AI 1.5 Flash, Azure Vision for OCR
 
 
+=======
+# Doctors-Appoinment
+>>>>>>> 1cfdd7afeec782285954be99d7b8e6fb8f5d40f6
