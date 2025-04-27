@@ -1,8 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+// import React from 'react';
+// import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { specialityData } from '../assets/assets';
-import { Search } from 'lucide-react';
+// import { Search } from 'lucide-react';
 
 const SpecialtyCard = ({ item, index }) => {
   return (

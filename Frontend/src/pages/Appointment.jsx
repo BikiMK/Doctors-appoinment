@@ -20,15 +20,44 @@ const Appointment = () => {
 
   const fetchDocInfo = () => {
     const mockDoctors = [
-      { _id: "1", name: "Dr. Christopher Davis", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Christopher", about: "Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.", fees: 49, experience: "4 yrs", slots_booked: {} },
-      { _id: "2", name: "Dr. John Smith", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+John", about: "Dr. Smith specializes in general health and preventive care with a patient-centered approach.", fees: 49, experience: "5 yrs", slots_booked: {} },
-      { _id: "3", name: "Dr. Emily Brown", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Emily", about: "Dr. Brown focuses on comprehensive care and early detection of health issues.", fees: 49, experience: "3 yrs", slots_booked: {} },
-      { _id: "4", name: "Dr. Michael Lee", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Michael", about: "Dr. Lee offers expert care with an emphasis on preventive medicine.", fees: 49, experience: "6 yrs", slots_booked: {} },
+      // General physician
+      { _id: "1", name: "Dr. Chloe Evans", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Chloe", about: "Dr. Chloe has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.", fees: 49, experience: "4 yrs", slots_booked: {} },
+      { _id: "2", name: "Dr. John Smith", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+John", about: "Dr. John specializes in general health and preventive care with a patient-centered approach.", fees: 49, experience: "5 yrs", slots_booked: {} },
+      { _id: "3", name: "Dr. Emily Brown", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Emily", about: "Dr. Emily focuses on comprehensive care and early detection of health issues.", fees: 49, experience: "3 yrs", slots_booked: {} },
+      { _id: "4", name: "Dr. Michael Lee", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Michael", about: "Dr. Michael offers expert care with an emphasis on preventive medicine.", fees: 49, experience: "6 yrs", slots_booked: {} },
+    
+      // Gynecologist
       { _id: "5", name: "Dr. Sarah Davis", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Sarah", about: "Dr. Sarah specializes in women’s health and reproductive care.", fees: 59, experience: "4 yrs", slots_booked: {} },
-      { _id: "6", name: "Dr. Laura Wilson", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Laura", about: "Dr. Wilson provides expert gynecological and prenatal care.", fees: 59, experience: "5 yrs", slots_booked: {} },
-      { _id: "7", name: "Dr. Rachel Green", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Rachel", about: "Dr. Green focuses on women’s health and surgical interventions.", fees: 59, experience: "3 yrs", slots_booked: {} },
-      { _id: "8", name: "Dr. Anna Taylor", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Anna", about: "Dr. Taylor offers comprehensive gynecological care.", fees: 59, experience: "6 yrs", slots_booked: {} },
+      { _id: "6", name: "Dr. Laura Wilson", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Laura", about: "Dr. Laura provides expert gynecological and prenatal care.", fees: 59, experience: "5 yrs", slots_booked: {} },
+      { _id: "7", name: "Dr. Rachel Green", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Rachel", about: "Dr. Rachel focuses on women’s health and surgical interventions.", fees: 59, experience: "3 yrs", slots_booked: {} },
+      { _id: "8", name: "Dr. Anna Taylor", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Anna", about: "Dr. Anna offers comprehensive gynecological care.", fees: 59, experience: "6 yrs", slots_booked: {} },
+    
+      // Dermatologist
+      { _id: "9", name: "Dr. James Carter", degree: "MBBS", speciality: "Dermatologist", image: "https://via.placeholder.com/150?text=Dr.+James", about: "Dr. James specializes in diagnosing and treating skin disorders with advanced techniques.", fees: 69, experience: "7 yrs", slots_booked: {} },
+      { _id: "10", name: "Dr. Olivia White", degree: "MBBS", speciality: "Dermatologist", image: "https://via.placeholder.com/150?text=Dr.+Olivia", about: "Dr. Olivia offers comprehensive skin care solutions and cosmetic dermatology.", fees: 69, experience: "6 yrs", slots_booked: {} },
+      { _id: "11", name: "Dr. Ethan Black", degree: "MBBS", speciality: "Dermatologist", image: "https://via.placeholder.com/150?text=Dr.+Ethan", about: "Dr. Ethan is an expert in skin surgeries and aesthetic dermatology.", fees: 69, experience: "5 yrs", slots_booked: {} },
+      { _id: "12", name: "Dr. Sophia King", degree: "MBBS", speciality: "Dermatologist", image: "https://via.placeholder.com/150?text=Dr.+Sophia", about: "Dr. Sophia focuses on treating chronic skin conditions with innovative methods.", fees: 69, experience: "4 yrs", slots_booked: {} },
+    
+      // Pediatricians
+      { _id: "13", name: "Dr. Daniel Scott", degree: "MBBS", speciality: "Pediatricians", image: "https://via.placeholder.com/150?text=Dr.+Daniel", about: "Dr. Daniel is dedicated to providing compassionate healthcare for children and adolescents.", fees: 54, experience: "5 yrs", slots_booked: {} },
+      { _id: "14", name: "Dr. Mia Johnson", degree: "MBBS", speciality: "Pediatricians", image: "https://via.placeholder.com/150?text=Dr.+Mia", about: "Dr. Mia specializes in pediatric wellness and chronic disease management.", fees: 54, experience: "4 yrs", slots_booked: {} },
+      { _id: "15", name: "Dr. Noah Miller", degree: "MBBS", speciality: "Pediatricians", image: "https://via.placeholder.com/150?text=Dr.+Noah", about: "Dr. Noah provides expert care in pediatric emergency and preventive care.", fees: 54, experience: "6 yrs", slots_booked: {} },
+      { _id: "16", name: "Dr. Zoe Adams", degree: "MBBS", speciality: "Pediatricians", image: "https://via.placeholder.com/150?text=Dr.+Zoe", about: "Dr. Zoe emphasizes healthy development and pediatric nutrition.", fees: 54, experience: "5 yrs", slots_booked: {} },
+    
+      // Neurologist
+      { _id: "17", name: "Dr. Liam Turner", degree: "MBBS", speciality: "Neurologist", image: "https://via.placeholder.com/150?text=Dr.+Liam", about: "Dr. Liam specializes in diagnosing and treating disorders of the nervous system.", fees: 79, experience: "8 yrs", slots_booked: {} },
+      { _id: "18", name: "Dr. Ava Martinez", degree: "MBBS", speciality: "Neurologist", image: "https://via.placeholder.com/150?text=Dr.+Ava", about: "Dr. Ava is an expert in treating epilepsy, stroke, and neurodegenerative diseases.", fees: 79, experience: "7 yrs", slots_booked: {} },
+      { _id: "19", name: "Dr. Lucas Hill", degree: "MBBS", speciality: "Neurologist", image: "https://via.placeholder.com/150?text=Dr.+Lucas", about: "Dr. Lucas focuses on neurodiagnostics and innovative therapies.", fees: 79, experience: "6 yrs", slots_booked: {} },
+      { _id: "20", name: "Dr. Isabella Clark", degree: "MBBS", speciality: "Neurologist", image: "https://via.placeholder.com/150?text=Dr.+Isabella", about: "Dr. Isabella is dedicated to comprehensive neurological care and rehabilitation.", fees: 79, experience: "5 yrs", slots_booked: {} },
+    
+      // Gastroenterologist
+      { _id: "21", name: "Dr. Henry Wright", degree: "MBBS", speciality: "Gastroenterologist", image: "https://via.placeholder.com/150?text=Dr.+Henry", about: "Dr. Henry specializes in digestive health, liver diseases, and endoscopic procedures.", fees: 74, experience: "7 yrs", slots_booked: {} },
+      { _id: "22", name: "Dr. Ella Lopez", degree: "MBBS", speciality: "Gastroenterologist", image: "https://via.placeholder.com/150?text=Dr.+Ella", about: "Dr. Ella focuses on gastrointestinal wellness and preventive treatments.", fees: 74, experience: "6 yrs", slots_booked: {} },
+      { _id: "23", name: "Dr. Mason Perez", degree: "MBBS", speciality: "Gastroenterologist", image: "https://via.placeholder.com/150?text=Dr.+Mason", about: "Dr. Mason provides expert management of chronic digestive conditions.", fees: 74, experience: "5 yrs", slots_booked: {} },
+      { _id: "24", name: "Dr. Lily Young", degree: "MBBS", speciality: "Gastroenterologist", image: "https://via.placeholder.com/150?text=Dr.+Lily", about: "Dr. Lily offers personalized care for digestive health and nutrition.", fees: 74, experience: "5 yrs", slots_booked: {} },
     ];
+    
+    
 
     const foundDoc = mockDoctors.find(doc => doc._id === docId) || doctors.find(doc => doc._id === docId);
     setDocInfo(foundDoc || null);
