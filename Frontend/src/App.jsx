@@ -45,6 +45,7 @@ export default function App() {
           <Route path="/appointment/:docId" element={<Appointment />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/my-account" element={<MyProfile />} />
+          <Route path="/my-account" element={<MyProfile />} />
         </Routes>
       </main>
       <Footer />

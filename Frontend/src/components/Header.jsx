@@ -14,13 +14,81 @@ const Header = () => {
   return (
     <>
       {showHero && (
-        <div className="relative -mt-20"> {/* Added negative margin to remove the space */}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-blue-800">
-            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,rgba(0,0,0,0.1)_100%)]" />
+        <div className="relative -mt-20">
+          {/* Background with Dark Gradient and Animation */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-950 to-gray-800">
+            {/* Subtle radial gradient overlay */}
+            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,rgba(0,0,0,0.2)_100%)]" />
+            {/* Animated Particles (Healthcare-themed) */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="particle particle-1"></div>
+              <div className="particle particle-2"></div>
+              <div className="particle particle-3"></div>
+              <div className="particle particle-4"></div>
+            </div>
           </div>
 
+          <style jsx>{`
+            .particle {
+              position: absolute;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background: rgba(59, 130, 246, 0.3); /* Blue glow for healthcare theme */
+              animation: float 15s infinite ease-in-out;
+              opacity: 0.5;
+            }
+
+            .particle-1 {
+              left: 20%;
+              top: 30%;
+              animation-delay: 0s;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="rgba(59,130,246,0.5)" viewBox="0 0 24 24"><path d="M12 2v8H4v4h8v8h4v-8h8v-4h-8V2h-4z"/></svg>') no-repeat center;
+              background-size: contain;
+            }
+
+            .particle-2 {
+              left: 70%;
+              top: 50%;
+              animation-delay: 5s;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="rgba(59,130,246,0.5)" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
+              background-size: contain;
+            }
+
+            .particle-3 {
+              left: 40%;
+              top: 80%;
+              animation-delay: 10s;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="rgba(59,130,246,0.5)" viewBox="0 0 24 24"><path d="M12 2v8H4v4h8v8h4v-8h8v-4h-8V2h-4z"/></svg>') no-repeat center;
+              background-size: contain;
+            }
+
+            .particle-4 {
+              left: 90%;
+              top: 20%;
+              animation-delay: 2s;
+              background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="rgba(59,130,246,0.5)" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
+              background-size: contain;
+            }
+
+            @keyframes float {
+              0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+              }
+              50% {
+                transform: translateY(-100px) scale(1.2);
+                opacity: 0.8;
+              }
+              100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+              }
+            }
+          `}</style>
+
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col md:flex-row items-center min-h-[calc(100vh-4rem)] py-8"> {/* Updated height calculation */}
+            <div className="flex flex-col md:flex-row items-center min-h-[calc(100vh-4rem)] py-8">
               <div className="md:w-1/2 flex flex-col items-start justify-center space-y-8 md:pr-12">
                 <div className="bg-white/10 backdrop-blur-md rounded-full py-2 px-4 border border-white/20">
                   <span className="text-emerald-400 font-medium">✨ Trusted by 10,000+ Patients</span>
@@ -33,7 +101,7 @@ const Header = () => {
                     </span>
                   </h1>
                   <p className="text-lg text-blue-100 leading-relaxed max-w-xl">
-                    Connect with top-rated doctors for personalized care. 
+                    Connect with top-rated doctors for personalized care.
                     Schedule appointments seamlessly and take control of your health journey.
                   </p>
                 </div>

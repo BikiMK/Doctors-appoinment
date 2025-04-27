@@ -12,7 +12,6 @@ function MyProfile() {
   const [location, setLocation] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [appointments, setAppointments] = useState([]);
-  const [showAppointments, setShowAppointments] = useState(false);
   const [currentView, setCurrentView] = useState("profile"); // "profile", "appointments", "settings"
   const [language, setLanguage] = useState("English");
   const navigate = useNavigate();
@@ -45,7 +44,7 @@ function MyProfile() {
         setMobile(user.user_metadata.mobile || "");
         setLocation(user.user_metadata.location || "");
         setLanguage(user.user_metadata.language || "English");
-        
+
         // Check if user has a saved avatar selection
         if (user.user_metadata.avatar_index !== undefined) {
           setAvatarUrl(animeAvatars[user.user_metadata.avatar_index]);
@@ -80,24 +79,20 @@ function MyProfile() {
 
   const changeAvatar = async () => {
     try {
-      // Get current avatar index or default to 0
-      const currentIndex = user.user_metadata.avatar_index !== undefined 
-        ? user.user_metadata.avatar_index 
+      const currentIndex = user.user_metadata.avatar_index !== undefined
+        ? user.user_metadata.avatar_index
         : user.id.charCodeAt(0) % animeAvatars.length;
-      
-      // Select next avatar (circular)
+
       const nextIndex = (currentIndex + 1) % animeAvatars.length;
-      
-      // Update user metadata with new avatar index
+
       const { error } = await supabase.auth.updateUser({
         data: { avatar_index: nextIndex }
       });
-      
+
       if (error) throw error;
-      
-      // Update avatar in UI
+
       setAvatarUrl(animeAvatars[nextIndex]);
-      
+
       toast.success("Avatar changed successfully", {
         position: "top-center",
         autoClose: 1500
@@ -155,7 +150,6 @@ function MyProfile() {
         position: "top-center",
         autoClose: 3000,
       });
-      // Refresh appointments
       await fetchUserAndAppointments();
     } catch (err) {
       console.error("Error canceling appointment:", err);
@@ -167,7 +161,7 @@ function MyProfile() {
   };
 
   if (loading) {
-    return <div className="pt-20 text-center">Loading...</div>;
+    return <div className="pt-20 text-center text-blue-100">Loading...</div>;
   }
 
   if (!user) {
@@ -175,21 +169,76 @@ function MyProfile() {
   }
 
   return (
-    <div 
-      className="flex items-center justify-center min-h-screen pt-20" 
-      style={{ 
-        backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/023/460/068/non_2x/medical-doctor-background-illustration-ai-generative-free-photo.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      }}
-    >
-      <div className="flex w-full max-w-4xl p-6 bg-white rounded-xl shadow-lg">
+    <div className="relative flex items-center justify-center min-h-screen pt-20 bg-gradient-to-br from-gray-900 to-blue-950">
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        <div className="pulse-particle pulse-particle-1"></div>
+        <div className="pulse-particle pulse-particle-2"></div>
+        <div className="pulse-particle pulse-particle-3"></div>
+      </div>
+      <style jsx>{`
+        .pulse-particle {
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="rgba(59,130,246,0.4)" viewBox="0 0 24 24"><path d="M12 2v8H4v4h8v8h4v-8h8v-4h-8V2h-4z"/></svg>') no-repeat center;
+          background-size: contain;
+          animation: pulse 10s infinite ease-in-out;
+          opacity: 0.4;
+        }
+
+        .pulse-particle-1 {
+          left: 15%;
+          top: 30%;
+          animation-delay: 0s;
+        }
+
+        .pulse-particle-2 {
+          left: 50%;
+          top: 60%;
+          animation-delay: 3s;
+        }
+
+        .pulse-particle-3 {
+          left: 85%;
+          top: 20%;
+          animation-delay: 6s;
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.4;
+          }
+          50% {
+            transform: scale(1.5);
+            opacity: 0.7;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0.4;
+          }
+        }
+
+        .gradient-text {
+          background-clip: text;
+          -webkit-background-clip: text;
+          color: transparent;
+          background-image: linear-gradient(to right, #60A5FA, #34D399);
+        }
+
+        .avatar-container:hover {
+          transform: scale(1.05);
+        }
+      `}</style>
+
+      <div className="flex w-full max-w-4xl p-6 bg-gray-900/80 backdrop-blur-md rounded-xl shadow-xl">
         {/* Sidebar */}
         <div className="w-1/4 pr-6">
-          <div className="flex flex-col items-center mb-6 p-4 bg-gray-100 rounded-lg">
-            <div className="relative group mb-4">
-              <div 
-                className="w-24 h-24 rounded-full overflow-hidden cursor-pointer border-4 border-teal-400 hover:border-teal-600 transition-colors"
+          <div className="flex flex-col items-center mb-6 p-4 bg-gray-800/50 rounded-lg">
+            <div className="relative group mb-4 avatar-container transition-transform duration-300">
+              <div
+                className="w-24 h-24 rounded-full overflow-hidden cursor-pointer border-4 border-gradient-to-r from-blue-500 to-emerald-500 hover:border-blue-600 transition-colors"
                 onClick={changeAvatar}
               >
                 <img
@@ -203,19 +252,19 @@ function MyProfile() {
                   </svg>
                 </div>
               </div>
-              <div className="text-xs text-center text-gray-500 mt-1">Click to change avatar</div>
+              <div className="text-xs text-blue-200 mt-1">Click to change avatar</div>
             </div>
-            <p className="font-medium">{name || "Your name"}</p>
-            <p className="text-gray-600 text-sm">{email || "yourname@gmail.com"}</p>
+            <p className="font-medium text-xl gradient-text" style={{ fontFamily: "'Poppins', sans-serif" }}>{name || "Your Name"}</p>
+            <p className="text-blue-200 text-sm">{email || "yourname@gmail.com"}</p>
           </div>
           <div className="space-y-2">
             <button
               onClick={() => setCurrentView("profile")}
               className={`flex items-center w-full p-2 rounded ${
-                currentView === "profile" 
-                  ? "bg-blue-500 text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              }`}
+                currentView === "profile"
+                  ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white"
+                  : "text-blue-100 hover:bg-gray-700/50"
+              } transition-all duration-300`}
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804l4.075-4.075m0 0A3 3 0 1117.804 5.121m-4.075 4.075a3 3 0 11-4.075-4.075m4.075 4.075l4.075 4.075" />
@@ -225,10 +274,10 @@ function MyProfile() {
             <button
               onClick={handleBookAppointmentsClick}
               className={`flex items-center w-full p-2 rounded ${
-                currentView === "appointments" 
-                  ? "bg-blue-500 text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              }`}
+                currentView === "appointments"
+                  ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white"
+                  : "text-blue-100 hover:bg-gray-700/50"
+              } transition-all duration-300`}
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -238,10 +287,10 @@ function MyProfile() {
             <button
               onClick={() => setCurrentView("settings")}
               className={`flex items-center w-full p-2 rounded ${
-                currentView === "settings" 
-                  ? "bg-blue-500 text-white" 
-                  : "text-gray-700 hover:bg-gray-200"
-              }`}
+                currentView === "settings"
+                  ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white"
+                  : "text-blue-100 hover:bg-gray-700/50"
+              } transition-all duration-300`}
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
@@ -250,7 +299,7 @@ function MyProfile() {
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center w-full p-2 text-gray-700 hover:bg-gray-200 rounded"
+              className="flex items-center w-full p-2 text-blue-100 hover:bg-gray-700/50 rounded transition-all duration-300"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -261,15 +310,17 @@ function MyProfile() {
         </div>
 
         {/* Main Content */}
-        <div className="w-3/4 p-6 bg-white rounded-lg shadow-md">
+        <div className="w-3/4 p-6 bg-gray-800/50 rounded-lg shadow-md">
           {currentView === "appointments" && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Your Appointments</h2>
+              <h2 className="text-2xl font-bold gradient-text mb-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                Your Appointments
+              </h2>
               {appointments.length > 0 ? (
                 <div className="space-y-4">
                   {appointments.map((appointment) => (
-                    <div key={appointment.id} className="p-4 bg-gray-100 rounded-lg shadow flex justify-between items-center">
-                      <div>
+                    <div key={appointment.id} className="p-4 bg-gray-700/50 rounded-lg shadow flex justify-between items-center">
+                      <div className="text-blue-100">
                         <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
                         <p><strong>Specialty:</strong> {appointment.specialty}</p>
                         <p><strong>Date:</strong> {new Date(appointment.appointment_date).toLocaleDateString()}</p>
@@ -278,7 +329,7 @@ function MyProfile() {
                       </div>
                       <button
                         onClick={() => handleCancelAppointment(appointment.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-all duration-300"
                       >
                         Cancel
                       </button>
@@ -286,11 +337,11 @@ function MyProfile() {
                   ))}
                 </div>
               ) : (
-                <p>No scheduled appointments found.</p>
+                <p className="text-blue-200">No scheduled appointments found.</p>
               )}
               <button
                 onClick={() => navigate("/doctors")}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="mt-4 bg-gradient-to-r from-blue-500 to-emerald-500 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-emerald-600 transition-all duration-300"
               >
                 Book Another Appointment
               </button>
@@ -301,54 +352,56 @@ function MyProfile() {
             <>
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold">{name || "Your name"}</h2>
-                  <p className="text-gray-600">{email || "yourname@gmail.com"}</p>
+                  <h2 className="text-2xl font-bold gradient-text" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                    {name || "Your Name"}
+                  </h2>
+                  <p className="text-blue-200">{email || "yourname@gmail.com"}</p>
                 </div>
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-gray-700">Name</label>
+                  <label className="block text-blue-100" style={{ fontFamily: "'Poppins', sans-serif" }}>Name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full p-2 bg-gray-700/50 text-blue-100 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter your name"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700">Email account</label>
+                  <label className="block text-blue-100" style={{ fontFamily: "'Poppins', sans-serif" }}>Email account</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={true}
-                    className="w-full p-2 border rounded bg-gray-100"
+                    className="w-full p-2 bg-gray-700/50 text-blue-100 border border-gray-600 rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700">Mobile number</label>
+                  <label className="block text-blue-100" style={{ fontFamily: "'Poppins', sans-serif" }}>Mobile number</label>
                   <input
                     type="text"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full p-2 bg-gray-700/50 text-blue-100 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Add your mobile number"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700">Location</label>
+                  <label className="block text-blue-100" style={{ fontFamily: "'Poppins', sans-serif" }}>Location</label>
                   <input
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full p-2 bg-gray-700/50 text-blue-100 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter your country"
                   />
                 </div>
                 <button
                   onClick={handleSave}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  className="bg-gradient-to-r from-blue-500 to-emerald-500 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-emerald-600 transition-all duration-300"
                 >
                   Save
                 </button>
@@ -359,60 +412,70 @@ function MyProfile() {
           {currentView === "settings" && (
             <>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-4">Settings</h2>
+                <h2 className="text-2xl font-bold gradient-text mb-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  Settings
+                </h2>
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-gray-700 mb-2">Language</label>
+                    <label className="block text-blue-100 mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>Language</label>
                     <select
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full p-2 bg-gray-700/50 text-blue-100 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       {languages.map((lang) => (
-                        <option key={lang} value={lang}>
+                        <option key={lang} value={lang} className="bg-gray-800">
                           {lang}
                         </option>
                       ))}
                     </select>
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Notification Preferences</h3>
+                    <h3 className="text-lg font-semibold gradient-text mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                      Notification Preferences
+                    </h3>
                     <div className="space-y-2">
                       <div className="flex items-center">
                         <input
                           type="checkbox"
                           id="emailNotif"
-                          className="mr-2"
+                          className="mr-2 accent-blue-500"
                           defaultChecked
                         />
-                        <label htmlFor="emailNotif">Email notifications</label>
+                        <label htmlFor="emailNotif" className="text-blue-100" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                          Email notifications
+                        </label>
                       </div>
                       <div className="flex items-center">
                         <input
                           type="checkbox"
                           id="smsNotif"
-                          className="mr-2"
+                          className="mr-2 accent-blue-500"
                           defaultChecked
                         />
-                        <label htmlFor="smsNotif">SMS notifications</label>
+                        <label htmlFor="smsNotif" className="text-blue-100" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                          SMS notifications
+                        </label>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Theme</h3>
+                    <h3 className="text-lg font-semibold gradient-text mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                      Theme
+                    </h3>
                     <div className="flex space-x-3">
-                      <button className="w-8 h-8 bg-teal-500 rounded-full border-2 border-white shadow-md"></button>
-                      <button className="w-8 h-8 bg-blue-500 rounded-full"></button>
-                      <button className="w-8 h-8 bg-purple-500 rounded-full"></button>
-                      <button className="w-8 h-8 bg-gray-800 rounded-full"></button>
+                      <button className="w-8 h-8 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full border-2 border-white shadow-md hover:scale-110 transition-all duration-300"></button>
+                      <button className="w-8 h-8 bg-blue-500 rounded-full hover:scale-110 transition-all duration-300"></button>
+                      <button className="w-8 h-8 bg-purple-500 rounded-full hover:scale-110 transition-all duration-300"></button>
+                      <button className="w-8 h-8 bg-gray-800 rounded-full hover:scale-110 transition-all duration-300"></button>
                     </div>
                   </div>
 
                   <button
                     onClick={handleSave}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    className="bg-gradient-to-r from-blue-500 to-emerald-500 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-emerald-600 transition-all duration-300"
                   >
                     Save Settings
                   </button>
