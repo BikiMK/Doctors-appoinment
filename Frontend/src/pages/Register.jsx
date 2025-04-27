@@ -1,25 +1,54 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-import axios from "axios";
-// import { toast } from "react-toastify";
-// import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { supabase } from "../supabaseClient";
 
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:3001/register", { name, email, password })
-      .then((result) => console.log(result))
-      .catch((err) => console.log(err));
+    console.log("Register submit:", { name, email, password });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name },
+        },
+      });
+
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+
+      if (data.user) {
+        toast.success("Registration successful! Welcome to your account.", {
+          position: "top-center",
+        });
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      toast.error(err.message || "Registration failed. Please try again.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Left Side - Form */}
+    <div className="flex h-screen pt-20">
       <div className="w-1/2 bg-white flex items-center justify-center p-10">
         <div className="w-full max-w-md">
           <div className="flex items-center mb-6">
@@ -36,7 +65,6 @@ function Register() {
                 strokeLinejoin="round"
               />
             </svg>
-            {/* <h1 className="text-2xl font-bold text-purple-800">TheCubeFactory</h1> */}
           </div>
           <h2 className="text-3xl font-bold mb-4">Create an account</h2>
           <p className="text-gray-600 mb-6">Please enter your details</p>
@@ -89,8 +117,6 @@ function Register() {
           </form>
         </div>
       </div>
-
-      {/* Right Side - Illustration */}
       <div className="w-1/2 bg-purple-500 flex items-center justify-center p-10">
         <div className="relative">
           <svg
@@ -99,11 +125,30 @@ function Register() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Background Icons (simplified) */}
-            <circle cx="50" cy="50" r="10" fill="none" stroke="#CBD5E0" strokeWidth="2" />
-            <circle cx="150" cy="100" r="15" fill="none" stroke="#CBD5E0" strokeWidth="2" />
-            <circle cx="250" cy="200" r="8" fill="none" stroke="#CBD5E0" strokeWidth="2" />
-            {/* Person Illustration */}
+            <circle
+              cx="50"
+              cy="50"
+              r="10"
+              fill="none"
+              stroke="#CBD5E0"
+              strokeWidth="2"
+            />
+            <circle
+              cx="150"
+              cy="100"
+              r="15"
+              fill="none"
+              stroke="#CBD5E0"
+              strokeWidth="2"
+            />
+            <circle
+              cx="250"
+              cy="200"
+              r="8"
+              fill="none"
+              stroke="#CBD5E0"
+              strokeWidth="2"
+            />
             <path
               d="M150 300 A50 50 0 0 1 200 350 A50 50 0 0 1 150 400 A50 50 0 0 1 100 350 A50 50 0 0 1 150 300 Z"
               fill="#4C2E6C"
@@ -119,7 +164,14 @@ function Register() {
             <path d="M150 330 L150 370" stroke="#000000" strokeWidth="4" />
             <path d="M140 370 L130 390" stroke="#000000" strokeWidth="4" />
             <path d="M160 370 L170 390" stroke="#000000" strokeWidth="4" />
-            <circle cx="150" cy="340" r="20" fill="#FFFFFF" stroke="#4C2E6C" strokeWidth="4" />
+            <circle
+              cx="150"
+              cy="340"
+              r="20"
+              fill="#FFFFFF"
+              stroke="#4C2E6C"
+              strokeWidth="4"
+            />
             <path d="M140 340 L160 340" stroke="#4C2E6C" strokeWidth="4" />
           </svg>
         </div>

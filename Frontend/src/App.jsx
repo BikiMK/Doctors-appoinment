@@ -1,5 +1,4 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -19,7 +18,7 @@ import HealthcareBot from "./components/Chatbot";
 export default function App() {
   return (
     <div className="mx-4 sm:mx-[10%]">
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={5000} />
       <Navbar />
       <HealthcareBot />
       <Routes>
@@ -34,6 +33,7 @@ export default function App() {
         <Route path="/my-appointments" element={<MyAppointments />} />
         <Route path="/appointment/:docId" element={<Appointment />} />
         <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/my-account" element={<MyProfile />} />
       </Routes>
       <Footer />
     </div>

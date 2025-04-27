@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { supabase } from "../supabaseClient";
 
@@ -11,6 +11,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Login submit:", { email, password });
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -18,22 +19,32 @@ function Login() {
       });
 
       if (error) {
+        console.error("Supabase error:", error);
         throw error;
       }
 
       if (data.user) {
-        toast.success("Login successful!");
-        navigate("/"); // Redirect to homepage
+        toast.success("Login successful!", {
+          position: "top-center",
+        });
+        navigate("/"); // Redirect to home to show hero section
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error(err.message || "Login failed. Please try again.");
+      toast.error(err.message || "Login failed. Please try again.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Left Side - Form */}
+    <div className="flex h-screen pt-20">
       <div className="w-1/2 bg-white flex items-center justify-center p-10">
         <div className="w-full max-w-md">
           <div className="flex items-center mb-6">
@@ -91,8 +102,6 @@ function Login() {
           </form>
         </div>
       </div>
-
-      {/* Right Side - Illustration */}
       <div className="w-1/2 bg-purple-500 flex items-center justify-center p-10">
         <div className="relative">
           <svg
@@ -152,7 +161,6 @@ function Login() {
           </svg>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }

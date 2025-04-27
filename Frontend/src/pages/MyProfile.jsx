@@ -1,170 +1,192 @@
-import React, { useContext, useState } from 'react';
-import { assets } from '../assets/assets';
-import { AppContext } from '../context/AppContext';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
+import { toast } from "react-toastify";
 
-const MyProfile = () => {
+function MyProfile() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const navigate = useNavigate();
 
-  const {userData, setUserData, token, backendUrl, loadUserProfileData} = useContext(AppContext)
-
-  const [isEdit, setIsEdit] = useState(false);
-  const [image, setImage] = useState(false);
-
-  const updateUserProfileData = async () => {
-    try {
-      const formData = new FormData() 
-      formData.append('name', userData.name)
-      formData.append('phone', userData.phone)
-      formData.append('address', JSON.stringify(userData.address))
-      formData.append('gender', userData.gender)
-      formData.append('dob', userData.dob)
-
-      
-
-      image && formData.append('image', image)
-
-      // logging form data
-      formData.forEach((value,key)=>{
-        console.log(`${key} : ${value}`)
-      })
-
-      const {data} = await axios.post(backendUrl+'/api/user/update-profile', formData, {headers: {token}})
-
-      if (data.success) {
-        toast.success(data.message)
-        await loadUserProfileData()
-        setIsEdit(false)
-        setImage(false)
-      } else {
-        toast.error(data.message)
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        if (user) {
+          setUser(user);
+          setName(user.user_metadata.name || "");
+          setEmail(user.email || "");
+          setMobile(user.user_metadata.mobile || "");
+          setLocation(user.user_metadata.location || "");
+          // Generate avatar based on email
+          const emailHash = user.email ? btoa(user.email) : "default";
+          setAvatarUrl(`https://api.dicebear.com/9.x/initials/svg?seed=${emailHash}`);
+        } else {
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+        navigate("/login");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  const handleSave = async () => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { name, mobile, location },
+      });
+      if (error) throw error;
+      toast.success("Credentials Saved Successfully", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      toast.error("Failed to update profile. Please try again.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
     }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
+
+  if (loading) {
+    return <div className="pt-20 text-center">Loading...</div>;
   }
 
-  return userData && (
-    <div className='max-w-lg mx-auto flex flex-col gap-4 p-6 bg-white shadow-md rounded-lg'>
-      {isEdit ? (
-        <label htmlFor="image" className='inline-block relative cursor-pointer'>
-          <img 
-            className='w-36 rounded opacity-75' 
-            src={image ? URL.createObjectURL(image) : userData.image} 
-            alt="Profile" 
-          />
-          <img className='w-10 absolute bottom-12 right-12' src={image ? '' : assets.upload_icon} alt="" />
-          <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image' hidden />
-        </label>
-      ) : (
-        <img className='w-36 rounded' src={userData.image} alt="Profile" />
-      )}
+  if (!user) {
+    return null; // Redirecting to login
+  }
 
-      {isEdit ? (
-        <input 
-          className='bg-gray-50 text-3xl font-medium mt-4' 
-          type="text" 
-          value={userData.name} 
-          onChange={e => setUserData(prev => ({ ...prev, name: e.target.value }))} 
-        />
-      ) : (
-        <p className='font-medium text-3xl text-neutral-800 mt-4'>{userData.name}</p>
-      )}
-
-      <hr className='bg-zinc-400 h-[1px] border-none' />
-
-      <div>
-        <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
-        <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
-          <p className='font-medium'>Email:</p>
-          <p className='text-blue-500'>{userData.email}</p>
-
-          <p className='font-medium'>Phone:</p>
-          {isEdit ? (
-            <input 
-              className='bg-gray-100 max-w-52' 
-              type="text" 
-              value={userData.phone} 
-              onChange={e => setUserData(prev => ({ ...prev, phone: e.target.value }))} 
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-teal-600 pt-20">
+      <div className="flex w-full max-w-4xl p-6 bg-white rounded-xl shadow-lg">
+        {/* Sidebar */}
+        <div className="w-1/4 pr-6">
+          <div className="flex items-center mb-6 p-4 bg-gray-100 rounded-lg">
+            <img
+              src={avatarUrl}
+              alt="User avatar"
+              className="w-12 h-12 rounded-full mr-4"
             />
-          ) : (
-            <p className='text-blue-500'>{userData.phone}</p>
-          )}
+            <div>
+              <p className="font-medium">{name || "Your name"}</p>
+              <p className="text-gray-600 text-sm">{email || "yourname@gmail.com"}</p>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <button
+              className="flex items-center w-full p-2 text-gray-700 hover:bg-gray-200 rounded"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804l4.075-4.075m0 0A3 3 0 1117.804 5.121m-4.075 4.075a3 3 0 11-4.075-4.075m4.075 4.075l4.075 4.075" />
+              </svg>
+              My Profile
+            </button>
+            <button
+              onClick={() => navigate("/appointment")}
+              className="flex items-center w-full p-2 text-gray-700 hover:bg-gray-200 rounded"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Book Appointments
+            </button>
+            <button
+              className="flex items-center w-full p-2 text-gray-700 hover:bg-gray-200 rounded"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+              </svg>
+              Settings
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full p-2 text-gray-700 hover:bg-gray-200 rounded"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Log Out
+            </button>
+          </div>
+        </div>
 
-          <p className='font-medium'>Address:</p>
-          <div>
-            {isEdit ? (
-              <>
-                <input 
-                  className='bg-gray-100' 
-                  onChange={(e) => setUserData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} 
-                  value={userData.address.line1} 
-                  type="text" 
-                />
-                <br />
-                <input 
-                  className='bg-gray-100' 
-                  onChange={(e) => setUserData(prev => ({ ...prev, address: { ...prev.address, line2: e.target.value } }))} 
-                  value={userData.address.line2} 
-                  type="text" 
-                />
-              </>
-            ) : (
-              <p className='text-gray-400'>
-                {userData.address.line1}
-                <br />
-                {userData.address.line2}
-              </p>
-            )}
+        {/* Main Content */}
+        <div className="w-3/4 p-6 bg-white rounded-lg shadow-md">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">{name || "Your name"}</h2>
+              <p className="text-gray-600">{email || "yourname@gmail.com"}</p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-700">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="Enter your name"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Email account</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={true} // Email is read-only via Supabase auth
+                className="w-full p-2 border rounded bg-gray-100"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Mobile number</label>
+              <input
+                type="text"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="Add your mobile number"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Location</label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="Enter your country"
+              />
+            </div>
+            <button
+              onClick={handleSave}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>
-
-      <div>
-        <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
-        <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
-          <p className='font-medium'>Gender:</p>
-          {isEdit ? (
-            <select 
-              className='max-w-20 bg-gray-100' 
-              onChange={(e) => setUserData(prev => ({ ...prev, gender: e.target.value }))} 
-              value={userData.gender}
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          ) : (
-            <p className='text-gray-400'>{userData.gender}</p>
-          )}
-
-          <p className='font-medium'>Birthday:</p>
-          {isEdit ? (
-            <input 
-              className='max-w-28 bg-gray-100' 
-              type='date' 
-              onChange={(e) => setUserData(prev => ({ ...prev, dob: e.target.value }))} 
-              value={userData.dob} 
-            />
-          ) : (
-            <p className='text-gray-400'>{userData.dob}</p>
-          )}
-        </div>
-      </div>
-
-      <div className='mt-10'>
-        {isEdit ? (
-          <button 
-            className='border border-primary px-8 py-2 rounded-full hover:bg-primary hover:text-white transition-all duration-300' 
-            onClick={updateUserProfileData}>Save Information</button>
-        ) : (
-          <button 
-            className='border border-primary px-8 py-2 rounded-full hover:bg-primary hover:text-white transition-all duration-300' 
-            onClick={() => setIsEdit(true)}>Edit</button>
-        )}
-      </div>
     </div>
   );
-};
+}
 
 export default MyProfile;
