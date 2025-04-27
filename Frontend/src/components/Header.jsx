@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
@@ -6,16 +6,21 @@ const Header = () => {
   // Only show hero section on homepage
   const showHero = location.pathname === "/";
 
+  const handleImageError = (e) => {
+    console.log('Image failed to load, switching to fallback');
+    e.target.src = 'https://placehold.co/600x400?text=Fallback+Image'; // Reliable fallback
+  };
+
   return (
     <>
       {showHero && (
-        <div className="relative">
+        <div className="relative -mt-20"> {/* Added negative margin to remove the space */}
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-blue-900 to-blue-800">
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,rgba(0,0,0,0.1)_100%)]" />
           </div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col md:flex-row items-center min-h-[calc(100vh-6rem)] py-8">
+            <div className="flex flex-col md:flex-row items-center min-h-[calc(100vh-4rem)] py-8"> {/* Updated height calculation */}
               <div className="md:w-1/2 flex flex-col items-start justify-center space-y-8 md:pr-12">
                 <div className="bg-white/10 backdrop-blur-md rounded-full py-2 px-4 border border-white/20">
                   <span className="text-emerald-400 font-medium">✨ Trusted by 10,000+ Patients</span>
@@ -55,8 +60,8 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                  <a
-                    href="#speciality"
+                  <Link
+                    to="/doctors"
                     className="relative overflow-hidden rounded-xl bg-white px-8 py-4 text-base font-bold text-blue-900 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
@@ -66,59 +71,57 @@ const Header = () => {
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
-                      />
+                      >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
                           d="M13 7l5 5m0 0l-5 5m5-5H6"
                         />
-                      </span>
-                    </a>
-                  </div>
+                      </svg>
+                    </span>
+                  </Link>
                 </div>
-                <div className="md:w-1/2 mt-12 md:mt-0">
-                  <div className="relative">
-                    <div className="absolute -inset-4">
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-2xl blur-2xl" />
+              </div>
+              <div className="md:w-1/2 mt-12 md:mt-0">
+                <div className="relative">
+                  <div className="absolute -inset-4">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-2xl blur-2xl" />
+                  </div>
+                  <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-900/90 to-indigo-900/90 p-1">
+                    <div className="relative rounded-xl overflow-hidden">
+                      <img
+                        className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105"
+                        src="https://www.shutterstock.com/image-photo/laptop-keyboard-stethoscope-on-blue-260nw-1907543080.jpg"
+                        alt="Professional doctor consultation"
+                        onError={handleImageError}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/20 to-transparent" />
                     </div>
-                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-900/90 to-indigo-900/90 p-1">
-                      <div className="relative rounded-xl overflow-hidden">
-                        <img
-                          className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105"
-                          src="/assets/doctor-consultation.jpg"
-                          alt="Professional doctor consultation"
-                          onError={(e) => {
-                            console.error("Image failed to load:", e);
-                            e.target.src = "https://via.placeholder.com/600x400";
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/20 to-transparent" />
-                      </div>
+                  </div>
+                  <div className="absolute -bottom-4 left-4 bg-white rounded-lg shadow-xl p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                      <p className="text-gray-800 font-medium">Live Consultations Available</p>
                     </div>
-                    <div className="absolute -bottom-4 left-4 bg-white rounded-lg shadow-xl p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                        <p className="text-gray-800 font-medium">Live Consultations Available</p>
-                      </div>
-                      <p className="text-gray-600 text-sm mt-1">
-                        Connect with doctors in real-time
-                      </p>
+                    <p className="text-gray-600 text-sm mt-1">
+                      Connect with doctors in real-time
+                    </p>
+                  </div>
+                  <div className="absolute -top-4 right-4 bg-gradient-to-r from-emerald-500 to-blue-500 p-4 rounded-lg shadow-xl text-white">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="font-medium">Quick Appointments</p>
                     </div>
-                    <div className="absolute -top-4 right-4 bg-gradient-to-r from-emerald-500 to-blue-500 p-4 rounded-lg shadow-xl text-white">
-                      <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p className="font-medium">Quick Appointments</p>
-                      </div>
-                      <p className="text-sm mt-1">Available within 24 hours</p>
-                    </div>
+                    <p className="text-sm mt-1">Available within 24 hours</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
       )}
     </>
   );

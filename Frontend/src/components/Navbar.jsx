@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
 function Navbar() {
@@ -39,13 +39,16 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-purple-700">MediSync</h1>
+            {/* Make "Cure Nexus" clickable to redirect to homepage */}
+            <Link to="/" className="text-2xl font-bold text-purple-700 hover:text-purple-600">
+              Cure Nexus
+            </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <a href="/" className="text-gray-700 hover:text-purple-700">Home</a>
-            <a href="/doctors" className="text-gray-700 hover:text-purple-700">Doctors</a>
-            <a href="/about" className="text-gray-700 hover:text-purple-700">About</a>
-            <a href="/contact" className="text-gray-700 hover:text-purple-700">Contact</a>
+            <Link to="/" className="text-gray-700 hover:text-purple-700">Home</Link>
+            <Link to="/doctors" className="text-gray-700 hover:text-purple-700">Doctors</Link>
+            <Link to="/about" className="text-gray-700 hover:text-purple-700">About</Link>
+            <Link to="/contact" className="text-gray-700 hover:text-purple-700">Contact</Link>
             {user ? (
               <button
                 onClick={() => navigate("/my-account")}

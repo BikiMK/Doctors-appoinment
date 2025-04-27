@@ -9,14 +9,8 @@ const Doctors = () => {
   const navigate = useNavigate();
   const { doctors } = useContext(AppContext);
 
-  // Log doctors data for debugging
-  console.log("Doctors from context:", doctors);
-
   useEffect(() => {
-    // Check if doctors data is available
     if (!doctors || doctors.length === 0) {
-      console.warn("Doctors data is empty or not loaded.");
-      // Mock data for testing with 4 doctors per specialty
       const mockDoctors = [
         // General physician
         { _id: "1", name: "Dr. Chloe Evans", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Chloe" },
@@ -53,18 +47,17 @@ const Doctors = () => {
       return;
     }
 
-    // Filter doctors based on selected specialty
     if (speciality) {
       setFilterDoc(doctors.filter(doc => doc.speciality === speciality));
     } else {
-      // Show all doctors if no specialty is selected
       setFilterDoc(doctors);
     }
   }, [doctors, speciality]);
 
   return (
-    <div>
-      <p className="text-gray-600">Browse through the doctor specialists.</p>
+    <div className="container mx-auto p-4">
+      <h1 className="text-xl font-bold text-gray-800">Browse through the doctor specialists.</h1>
+      
       <div className='flex flex-col sm:flex-row items-start gap-5 mt-5'>
         <button 
           className={`py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilter ? 'bg-primary text-white' : ''}`} 
@@ -72,6 +65,7 @@ const Doctors = () => {
         >
           Filters
         </button>
+        
         <div className={`flex-col gap-4 text-sm text-gray-600 ${showFilter ? 'flex' : 'hidden sm:flex'}`}>
           {['General physician', 'Gynecologist', 'Dermatologist', 'Pediatricians', 'Neurologist', 'Gastroenterologist'].map((spec) => (
             <p 
@@ -83,6 +77,7 @@ const Doctors = () => {
             </p>
           ))}
         </div>
+        
         <div className='w-full grid grid-cols-auto gap-4 gap-y-6'>
           {filterDoc.length > 0 ? (
             filterDoc.map((item) => (

@@ -14,20 +14,10 @@ import PaymentPage from "./pages/PaymentPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HealthcareBot from "./components/Chatbot";
-
-
-
-
 import { useEffect } from 'react';
-// import { Route } from 'react-router-dom';
-// import Appointment from './pages/Appointment';
-// import MyProfile from './pages/MyProfile';
 import { supabase } from './supabaseClient';
 
 export default function App() {
-
-
-  // eslint-disable-next-line no-undef
   useEffect(() => {
     const checkAuth = async () => {
       const { data } = await supabase.auth.getUser();
@@ -36,30 +26,28 @@ export default function App() {
     checkAuth();
   }, []);
 
-
-
-
   return (
-    <div className="mx-4 sm:mx-[10%]">
+    <div className="min-h-screen flex flex-col">
       <ToastContainer position="top-center" autoClose={5000} />
       <Navbar />
       <HealthcareBot />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/doctors" element={<Doctors />} />
-        <Route path="/doctors/:speciality" element={<Doctors />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/my-profile" element={<MyProfile />} />
-        <Route path="/my-appointments" element={<MyAppointments />} />
-        <Route path="/appointment/:docId" element={<Appointment />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/my-account" element={<MyProfile />} />
-      </Routes>
+      <main className="flex-1 pt-16"> {/* Added padding-top to account for fixed navbar height */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/doctors" element={<Doctors />} />
+          <Route path="/doctors/:speciality" element={<Doctors />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/my-appointments" element={<MyAppointments />} />
+          <Route path="/appointment/:docId" element={<Appointment />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/my-account" element={<MyProfile />} />
+        </Routes>
+      </main>
       <Footer />
     </div>
   );
 }
-
