@@ -14,7 +14,7 @@ const About = () => {
       {/* Hero Section with Stats */}
       <div className="text-center mb-20">
         <h1 className="text-5xl font-bold mb-6">
-          About <span className="text-blue-600">MediSync</span>
+          About <span className="text-blue-600">Cure Nexus</span>
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto mb-12 text-lg">
           Revolutionizing healthcare access through technology and compassionate care
@@ -48,7 +48,7 @@ const About = () => {
           </h2>
           
           <p className="text-gray-600 text-lg leading-relaxed">
-            At MediSync, we're revolutionizing the way you access healthcare services. Our platform combines cutting-edge technology with compassionate care to provide you with an unparalleled medical appointment experience.
+            At Cure Nexus, we're revolutionizing the way you access healthcare services. Our platform combines cutting-edge technology with compassionate care to provide you with an unparalleled medical appointment experience.
           </p>
 
           {/* Key Features */}
@@ -82,7 +82,7 @@ const About = () => {
       <div className="mb-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">
-            Why Choose <span className="text-blue-600">MediSync</span>
+            Why Choose <span className="text-blue-600">Cure Nexus</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
             Experience healthcare that's designed around you and your needs

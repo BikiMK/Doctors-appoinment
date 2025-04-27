@@ -16,10 +16,10 @@ const Footer = () => {
                 src={assets.logo} 
                 alt="MediSync Logo" 
               />
-              <h2 className="ml-3 text-xl font-bold text-gray-900">MediSync</h2>
+              <h2 className="ml-3 text-xl font-bold text-gray-900">Cure Nexus</h2>
             </div>
             <p className="text-gray-600 leading-relaxed mb-6">
-              MediSync is India's leading healthcare technology platform, transforming 
+            Cure Nexus is India's leading healthcare technology platform, transforming 
               the way medical professionals manage their practices. We provide cutting-edge 
               solutions for appointment scheduling, patient records management, and 
               seamless healthcare delivery.
@@ -74,7 +74,7 @@ const Footer = () => {
                   </span>
                   <div>
                     <p className="font-medium">Call Us</p>
-                    <p>+91 98765 43210</p>
+                    <p>+91 83919 34013</p>
                   </div>
                 </a>
               </li>
@@ -85,7 +85,7 @@ const Footer = () => {
                   </span>
                   <div>
                     <p className="font-medium">Email Us</p>
-                    <p>info@medisync.in</p>
+                    <p>info@CureNexus.in</p>
                   </div>
                 </a>
               </li>
@@ -96,7 +96,7 @@ const Footer = () => {
                   </span>
                   <div>
                     <p className="font-medium">Location</p>
-                    <p>Pune, Maharashtra</p>
+                    <p>Kolkata</p>
                   </div>
                 </div>
               </li>
@@ -119,7 +119,7 @@ const Footer = () => {
         <div className="border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-600 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} MediSync. All rights reserved. | Made with ❤️ in India
+              © {new Date().getFullYear()} Cure Nexus. All rights reserved. | Made with ❤️ in India
             </p>
             <div className="flex space-x-6 text-sm">
               <a href="/terms" className="text-gray-600 hover:text-blue-600 transition-colors">Terms</a>

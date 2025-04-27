@@ -1,7 +1,7 @@
 <<<<<<< HEAD
-# MediSync 
+# Cure Nexus
 
-Welcome to **MediSync** – a web application designed to streamline doctor appointments and healthcare management, enhancing communication between patients and healthcare providers while also integrating Gen AI for doctor recommendation and prescription data extraction.
+Welcome to **Cure Nexus** – a web application designed to streamline doctor appointments and healthcare management, enhancing communication between patients and healthcare providers while also integrating Gen AI for doctor recommendation and prescription data extraction.
 
 > **Note:** Refer to each directory’s README file for detailed documentation, configuration and installation guide.
 

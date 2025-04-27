@@ -22,7 +22,7 @@ const Contact = () => {
       {/* Hero Section */}
       <div className="text-center mb-16">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">
-          Connect with <span className="text-blue-600">MEDISYNC</span>
+          Connect with <span className="text-blue-600">Cure Nexus</span>
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Located at Symbiosis Institute of Technology (SIT) Campus
@@ -45,10 +45,9 @@ const Contact = () => {
         <div className="grid gap-6">
           <ContactInfoCard icon={Building2} title="Our Location">
             <p className="text-gray-600 leading-relaxed">
-              <strong>Symbiosis Institute of Technology (SIT)</strong><br />
-              Near Lupin Research Park,<br />
-              Gram: Lavale, Tal: Mulshi,<br />
-              Pune, Maharashtra 412115, India
+              <strong>Acharya Prafulla Chandra College (APC College)</strong><br />
+              New Barrackpore, Dist : 24 pgs(N),<br />
+              Kolkata - 700131, West Bengal
             </p>
           </ContactInfoCard>
 
@@ -70,9 +69,9 @@ const Contact = () => {
 
           <ContactInfoCard icon={Mail} title="Email & Web">
             <p className="text-gray-600">
-              Appointments: medisync.sit@symbiosis.ac.in<br />
-              General Enquiries: info.medisync@sit.symbiosis.ac.in<br />
-              Website: www.sit.symbiosis.ac.in/medisync
+              Appointments: CureNexus.sit@symbiosis.ac.in<br />
+              General Enquiries: info.CureNexus@sit.symbiosis.ac.in<br />
+              Website: www.sit.symbiosis.ac.in/CureNexus
             </p>
           </ContactInfoCard>
         </div>
@@ -83,11 +82,11 @@ const Contact = () => {
         <div className="bg-white p-4 rounded-2xl shadow-lg">
           <div className="text-gray-700 mb-4">
             <MapPin className="inline-block w-5 h-5 text-blue-600 mr-2" />
-            <span className="font-medium">Symbiosis Institute of Technology - MEDISYNC Center</span>
+            <span className="font-medium">Acharya Prafulla Chandra College - Cure Nexus Center</span>
           </div>
           <iframe 
             className="w-full h-[450px] rounded-lg border-0"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.255900857557!2d73.726903!3d18.5401013!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf2e67bf7e47%3A0x50efd384303f6cbb!2sSymbiosis%20Institute%20of%20Technology%20-%20SIT%20Pune!5e0!3m2!1sen!2sin!4v1699297183685!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3683.264382179154!2d88.38551431496417!3d22.602870185165065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a027591e2c1cc07%3A0x45a5396f978c2a97!2sAcharya%20Prafulla%20Chandra%20College!5e0!3m2!1sen!2sin!4v1650641999203!5m2!1sen!2sin" 
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -102,19 +101,16 @@ const Contact = () => {
           <div>
             <h4 className="font-semibold text-gray-700 mb-3">From Pune City</h4>
             <ul className="space-y-2 text-gray-600">
-              <li>• 45 minutes drive from Pune Railway Station</li>
-              <li>• Near Lupin Research Park</li>
-              <li>• Located on Mulshi Road</li>
-              <li>• Accessible via SIT College Road</li>
+              <li>• 45 minutes drive from Sealdaha Railway Station</li>
+              <li>• New Barrackpore, Dist : 24 pgs(N)</li>
+              <li>• Kolkata - 700131, West Bengal</li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold text-gray-700 mb-3">Landmarks</h4>
             <ul className="space-y-2 text-gray-600">
-              <li>• Adjacent to Symbiosis International University</li>
-              <li>• Near Lavale Village</li>
-              <li>• Close to Lupin Research Park</li>
-              <li>• Off Mumbai-Bangalore Highway</li>
+              <li>• Adjacent to Acharya Prafulla Chandra College</li>
+              <li>• Near Sealdaha Station</li>
             </ul>
           </div>
         </div>
@@ -127,7 +123,7 @@ const Contact = () => {
             Join Our Medical Team
           </h2>
           <p className="text-gray-600 mb-8">
-            Be part of our prestigious healthcare facility at Symbiosis Institute of Technology.
+            Be part of our prestigious healthcare facility at Acharya Prafulla Chandra College.
             We're looking for dedicated healthcare professionals to serve our academic community.
           </p>
           <button className="group bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300 flex items-center gap-2 mx-auto">
@@ -144,7 +140,7 @@ const Contact = () => {
             <Globe className="w-6 h-6 text-blue-600" />
           </div>
           <h3 className="font-semibold mb-2">Language Support</h3>
-          <p className="text-gray-600">English, Hindi, Marathi</p>
+          <p className="text-gray-600">English, Hindi, Bengali</p>
         </div>
         
         <div className="text-center p-6 bg-gray-50 rounded-xl">
@@ -152,7 +148,7 @@ const Contact = () => {
             <MapPin className="w-6 h-6 text-blue-600" />
           </div>
           <h3 className="font-semibold mb-2">Campus Location</h3>
-          <p className="text-gray-600">Inside SIT Lavale Campus</p>
+          <p className="text-gray-600">Inside Acharya Prafulla Chandra College Campus</p>
         </div>
 
         <div className="text-center p-6 bg-gray-50 rounded-xl">
