@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { assets } from '../assets/assets';
 import { Mail, Phone, MapPin, Clock, Building2, ArrowRight, Globe } from 'lucide-react';
 
@@ -16,7 +16,39 @@ const ContactInfoCard = ({ icon: Icon, title, children }) => (
   </div>
 );
 
+// Popup Modal Component
+const PopupModal = ({ isOpen, onClose, message }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">{message}</h3>
+        <button
+          onClick={onClose}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Contact = () => {
+  // State to manage popup visibility
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // Function to open popup
+  const handleOpenPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  // Function to close popup
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       {/* Hero Section */}
@@ -25,7 +57,7 @@ const Contact = () => {
           Connect with <span className="text-blue-600">Cure Nexus</span>
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Located at Symbiosis Institute of Technology (SIT) Campus
+          Located at Acharya Prafulla Chandra College Campus (APC College)
         </p>
       </div>
 
@@ -34,7 +66,7 @@ const Contact = () => {
         {/* Contact Image */}
         <div className="relative">
           <div className="absolute -z-10 w-full h-full bg-blue-100 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-          <img 
+          <img
             className="w-full rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300"
             src={assets.contact_image}
             alt="Contact Us at SIT"
@@ -69,9 +101,9 @@ const Contact = () => {
 
           <ContactInfoCard icon={Mail} title="Email & Web">
             <p className="text-gray-600">
-              Appointments: CureNexus.sit@symbiosis.ac.in<br />
-              General Enquiries: info.CureNexus@sit.symbiosis.ac.in<br />
-              Website: www.sit.symbiosis.ac.in/CureNexus
+              Appointments: CureNexus.apc@symbiosis.ac.in<br />
+              General Enquiries: info.CureNexus@apc.symbiosis.ac.in<br />
+              Website: www.apc.com/CureNexus
             </p>
           </ContactInfoCard>
         </div>
@@ -84,9 +116,9 @@ const Contact = () => {
             <MapPin className="inline-block w-5 h-5 text-blue-600 mr-2" />
             <span className="font-medium">Acharya Prafulla Chandra College - Cure Nexus Center</span>
           </div>
-          <iframe 
+          <iframe
             className="w-full h-[450px] rounded-lg border-0"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3683.264382179154!2d88.38551431496417!3d22.602870185165065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a027591e2c1cc07%3A0x45a5396f978c2a97!2sAcharya%20Prafulla%20Chandra%20College!5e0!3m2!1sen!2sin!4v1650641999203!5m2!1sen!2sin" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3683.264382179154!2d88.38551431496417!3d22.602870185165065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a027591e2c1cc07%3A0x45a5396f978c2a97!2sAcharya%20Prafulla%20Chandra%20College!5e0!3m2!1sen!2sin!4v1650641999203!5m2!1sen!2sin"
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -99,7 +131,7 @@ const Contact = () => {
         <h3 className="text-2xl font-bold text-gray-800 mb-6">Getting Here</h3>
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h4 className="font-semibold text-gray-700 mb-3">From Pune City</h4>
+            <h4 className="font-semibold text-gray-700 mb-3">From Kolkata</h4>
             <ul className="space-y-2 text-gray-600">
               <li>• 45 minutes drive from Sealdaha Railway Station</li>
               <li>• New Barrackpore, Dist : 24 pgs(N)</li>
@@ -126,12 +158,22 @@ const Contact = () => {
             Be part of our prestigious healthcare facility at Acharya Prafulla Chandra College.
             We're looking for dedicated healthcare professionals to serve our academic community.
           </p>
-          <button className="group bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300 flex items-center gap-2 mx-auto">
+          <button
+            onClick={handleOpenPopup}
+            className="group bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-all duration-300 flex items-center gap-2 mx-auto"
+          >
             View Current Openings
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>
+
+      {/* Popup Modal */}
+      <PopupModal
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        message="No openings available right now"
+      />
 
       {/* Additional Information */}
       <div className="mt-20 grid md:grid-cols-3 gap-8">
@@ -142,7 +184,7 @@ const Contact = () => {
           <h3 className="font-semibold mb-2">Language Support</h3>
           <p className="text-gray-600">English, Hindi, Bengali</p>
         </div>
-        
+
         <div className="text-center p-6 bg-gray-50 rounded-xl">
           <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
             <MapPin className="w-6 h-6 text-blue-600" />
