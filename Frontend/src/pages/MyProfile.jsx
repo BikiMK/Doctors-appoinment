@@ -11,35 +11,60 @@ function MyProfile() {
   const [mobile, setMobile] = useState("");
   const [location, setLocation] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [appointments, setAppointments] = useState([]);
+  const [showAppointments, setShowAppointments] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserAndAppointments = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error) throw error;
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError) throw userError;
         if (user) {
           setUser(user);
           setName(user.user_metadata.name || "");
           setEmail(user.email || "");
           setMobile(user.user_metadata.mobile || "");
           setLocation(user.user_metadata.location || "");
-          // Generate avatar based on email
-          const emailHash = user.email ? btoa(user.email) : "default";
-          setAvatarUrl(`https://api.dicebear.com/9.x/initials/svg?seed=${emailHash}`);
+          // Generate avatar initials
+          const initials = user.user_metadata.name
+            ? user.user_metadata.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2)
+            : "NN";
+          setAvatarUrl(`https://via.placeholder.com/50/${initialsBg(initials)}/ffffff?text=${initials}`);
+
+          // Fetch appointments
+          const { data: appointmentsData, error: appointmentsError } = await supabase
+            .from("appointments")
+            .select("*")
+            .eq("user_id", user.id)
+            .eq("status", "scheduled");
+          if (appointmentsError) throw appointmentsError;
+          setAppointments(appointmentsData || []);
         } else {
           navigate("/login");
         }
       } catch (err) {
-        console.error("Error fetching user:", err);
+        console.error("Error fetching user or appointments:", err);
         navigate("/login");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    fetchUserAndAppointments();
   }, [navigate]);
+
+  // Generate a random background color for initials avatar
+  const initialsBg = (initials) => {
+    const colors = ["FF6B6B", "4ECDC4", "45B7D1", "96CEB4", "FFEEAD"];
+    const index = initials.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
 
   const handleSave = async () => {
     try {
@@ -50,6 +75,7 @@ function MyProfile() {
       toast.success("Credentials Saved Successfully", {
         position: "top-center",
         autoClose: 3000,
+        onClose: () => navigate("/"),
       });
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -63,6 +89,14 @@ function MyProfile() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/login");
+  };
+
+  const handleBookAppointmentsClick = () => {
+    if (appointments.length === 0) {
+      navigate("/doctors");
+    } else {
+      setShowAppointments(true);
+    }
   };
 
   if (loading) {
@@ -99,7 +133,7 @@ function MyProfile() {
               My Profile
             </button>
             <button
-              onClick={() => navigate("/appointment")}
+              onClick={handleBookAppointmentsClick}
               className="flex items-center w-full p-2 text-gray-700 hover:bg-gray-200 rounded"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,60 +163,88 @@ function MyProfile() {
 
         {/* Main Content */}
         <div className="w-3/4 p-6 bg-white rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-6">
+          {showAppointments ? (
             <div>
-              <h2 className="text-2xl font-bold">{name || "Your name"}</h2>
-              <p className="text-gray-600">{email || "yourname@gmail.com"}</p>
+              <h2 className="text-2xl font-bold mb-4">Your Appointments</h2>
+              {appointments.length > 0 ? (
+                <div className="space-y-4">
+                  {appointments.map((appointment) => (
+                    <div key={appointment.id} className="p-4 bg-gray-100 rounded-lg shadow">
+                      <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
+                      <p><strong>Specialty:</strong> {appointment.specialty}</p>
+                      <p><strong>Date:</strong> {new Date(appointment.appointment_date).toLocaleString()}</p>
+                      <p><strong>Status:</strong> {appointment.status}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No appointments found.</p>
+              )}
+              <button
+                onClick={() => navigate("/doctors")}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Book Another Appointment
+              </button>
             </div>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700">Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
-                placeholder="Enter your name"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Email account</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={true} // Email is read-only via Supabase auth
-                className="w-full p-2 border rounded bg-gray-100"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Mobile number</label>
-              <input
-                type="text"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
-                placeholder="Add your mobile number"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700">Location</label>
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
-                placeholder="Enter your country"
-              />
-            </div>
-            <button
-              onClick={handleSave}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Save
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">{name || "Your name"}</h2>
+                  <p className="text-gray-600">{email || "yourname@gmail.com"}</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Email account</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={true}
+                    className="w-full p-2 border rounded bg-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Mobile number</label>
+                  <input
+                    type="text"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    placeholder="Add your mobile number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Location</label>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    placeholder="Enter your country"
+                  />
+                </div>
+                <button
+                  onClick={handleSave}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  Save
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
