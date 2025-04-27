@@ -72,7 +72,7 @@ const About = () => {
           <div className="bg-gradient-to-r from-blue-50 to-white p-8 rounded-2xl border-l-4 border-blue-600">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">Our Vision</h3>
             <p className="text-gray-600 leading-relaxed">
-              Our vision at MediSync is to create a seamless healthcare experience for every user. We aim to bridge the gap between patients and healthcare providers, making it easier for you to access the care you need, when you need it.
+              Our vision at Cure Nexus is to create a seamless healthcare experience for every user. We aim to bridge the gap between patients and healthcare providers, making it easier for you to access the care you need, when you need it.
             </p>
           </div>
         </div>
