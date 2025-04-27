@@ -4,11 +4,11 @@ import { AppContext } from '../context/AppContext';
 import { assets } from '../assets/assets';
 import RelatedDoctor from '../components/RelatedDoctors';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import { supabase } from '../supabaseClient';
 
 const Appointment = () => {
   const { docId } = useParams();
-  const { doctors, currencySymbol, backendUrl, token, getDoctorsData } = useContext(AppContext);
+  const { doctors, currencySymbol, getDoctorsData } = useContext(AppContext);
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -19,7 +19,6 @@ const Appointment = () => {
   const [slotTime, setSlotTime] = useState('');
 
   const fetchDocInfo = () => {
-    // Mock doctor data if not found in context
     const mockDoctors = [
       { _id: "1", name: "Dr. Christopher Davis", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+Christopher", about: "Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.", fees: 49, experience: "4 yrs", slots_booked: {} },
       { _id: "2", name: "Dr. John Smith", degree: "MBBS", speciality: "General physician", image: "https://via.placeholder.com/150?text=Dr.+John", about: "Dr. Smith specializes in general health and preventive care with a patient-centered approach.", fees: 49, experience: "5 yrs", slots_booked: {} },
@@ -29,7 +28,6 @@ const Appointment = () => {
       { _id: "6", name: "Dr. Laura Wilson", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Laura", about: "Dr. Wilson provides expert gynecological and prenatal care.", fees: 59, experience: "5 yrs", slots_booked: {} },
       { _id: "7", name: "Dr. Rachel Green", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Rachel", about: "Dr. Green focuses on women’s health and surgical interventions.", fees: 59, experience: "3 yrs", slots_booked: {} },
       { _id: "8", name: "Dr. Anna Taylor", degree: "MBBS", speciality: "Gynecologist", image: "https://via.placeholder.com/150?text=Dr.+Anna", about: "Dr. Taylor offers comprehensive gynecological care.", fees: 59, experience: "6 yrs", slots_booked: {} },
-      // Add more mock data for other specialties as needed
     ];
 
     const foundDoc = mockDoctors.find(doc => doc._id === docId) || doctors.find(doc => doc._id === docId);
@@ -83,30 +81,51 @@ const Appointment = () => {
   };
 
   const bookAppointment = async () => {
-    if (!token) {
-      toast.warn('Login to book appointment');
-      return navigate('/login');
-    }
-
     try {
+      const { data, error } = await supabase.auth.getUser();
+      console.log('Book Appointment Auth Check:', data);
+      if (error || !data || !data.user) {
+        toast.warn('Please login to book an appointment');
+        navigate('/login');
+        return;
+      }
+
       const date = docSlots[slotIndex][0].datetime;
       let day = date.getDate();
       let month = date.getMonth() + 1;
       let year = date.getFullYear();
-
       const slotDate = `${day}_${month}_${year}`;
 
-      const { data } = await axios.post(backendUrl + '/api/user/book-appointment', { docId, slotDate, slotTime }, { headers: { token } });
+      const { user } = data;
+      const { error: insertError } = await supabase.from('appointments').insert({
+        user_id: user.id,
+        doctor_id: docId,
+        doctor_name: docInfo.name,
+        specialty: docInfo.speciality,
+        appointment_date: date,
+        slot_time: slotTime,
+        status: 'scheduled',
+      });
+      console.log("Inserted Appointment Data:", { user_id: user.id, doctor_id: docId, slot_time: slotTime });
 
-      if (data.success) {
-        toast.success(data.message);
-        getDoctorsData();
-        navigate('/my-appointments');
-      } else {
-        toast.error(data.message);
-      }
+      if (insertError) throw insertError;
+
+      const updatedDocInfo = { ...docInfo };
+      if (!updatedDocInfo.slots_booked[slotDate]) updatedDocInfo.slots_booked[slotDate] = [];
+      updatedDocInfo.slots_booked[slotDate].push(slotTime);
+      setDocInfo(updatedDocInfo);
+
+      toast.success('Appointment booked', {
+        position: 'top-center',
+        autoClose: 3000,
+        onClose: () => {
+          navigate('/my-account');
+          window.location.reload();
+        },
+      });
     } catch (error) {
-      toast.error(error.message);
+      console.error('Error booking appointment:', error);
+      toast.error('Failed to book appointment. Please try again.');
     }
   };
 
@@ -121,7 +140,6 @@ const Appointment = () => {
   return docInfo && (
     <div className="max-w-4xl mx-auto p-4">
       {/* ---------- Header ---------- */}
-      
 
       {/* ---------- Doctor Details ---------- */}
       <div className="flex flex-col md:flex-row gap-6 bg-white border border-gray-200 rounded-lg p-6 shadow-md">

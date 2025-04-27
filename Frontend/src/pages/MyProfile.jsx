@@ -15,47 +15,47 @@ function MyProfile() {
   const [showAppointments, setShowAppointments] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserAndAppointments = async () => {
-      try {
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError) throw userError;
-        if (user) {
-          setUser(user);
-          setName(user.user_metadata.name || "");
-          setEmail(user.email || "");
-          setMobile(user.user_metadata.mobile || "");
-          setLocation(user.user_metadata.location || "");
-          // Generate avatar initials
-          const initials = user.user_metadata.name
-            ? user.user_metadata.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .toUpperCase()
-                .slice(0, 2)
-            : "NN";
-          setAvatarUrl(`https://via.placeholder.com/50/${initialsBg(initials)}/ffffff?text=${initials}`);
+  const fetchUserAndAppointments = async () => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      if (user) {
+        setUser(user);
+        setName(user.user_metadata.name || "");
+        setEmail(user.email || "");
+        setMobile(user.user_metadata.mobile || "");
+        setLocation(user.user_metadata.location || "");
+        // Generate avatar initials
+        const initials = user.user_metadata.name
+          ? user.user_metadata.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2)
+          : "NN";
+        setAvatarUrl(`https://via.placeholder.com/50/${initialsBg(initials)}/ffffff?text=${initials}`);
 
-          // Fetch appointments
-          const { data: appointmentsData, error: appointmentsError } = await supabase
-            .from("appointments")
-            .select("*")
-            .eq("user_id", user.id)
-            .eq("status", "scheduled");
-          if (appointmentsError) throw appointmentsError;
-          setAppointments(appointmentsData || []);
-        } else {
-          navigate("/login");
-        }
-      } catch (err) {
-        console.error("Error fetching user or appointments:", err);
+        // Fetch appointments
+        const { data: appointmentsData, error: appointmentsError } = await supabase
+          .from("appointments")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("status", "scheduled");
+        if (appointmentsError) throw appointmentsError;
+        setAppointments(appointmentsData || []);
+      } else {
         navigate("/login");
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching user or appointments:", err);
+      navigate("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUserAndAppointments();
   }, [navigate]);
 
@@ -96,6 +96,28 @@ function MyProfile() {
       navigate("/doctors");
     } else {
       setShowAppointments(true);
+    }
+  };
+
+  const handleCancelAppointment = async (appointmentId) => {
+    try {
+      const { error } = await supabase
+        .from("appointments")
+        .update({ status: "canceled" })
+        .eq("id", appointmentId);
+      if (error) throw error;
+      toast.success("Appointment canceled successfully", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      // Refresh appointments
+      await fetchUserAndAppointments();
+    } catch (err) {
+      console.error("Error canceling appointment:", err);
+      toast.error("Failed to cancel appointment. Please try again.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -169,16 +191,25 @@ function MyProfile() {
               {appointments.length > 0 ? (
                 <div className="space-y-4">
                   {appointments.map((appointment) => (
-                    <div key={appointment.id} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
-                      <p><strong>Specialty:</strong> {appointment.specialty}</p>
-                      <p><strong>Date:</strong> {new Date(appointment.appointment_date).toLocaleString()}</p>
-                      <p><strong>Status:</strong> {appointment.status}</p>
+                    <div key={appointment.id} className="p-4 bg-gray-100 rounded-lg shadow flex justify-between items-center">
+                      <div>
+                        <p><strong>Doctor:</strong> {appointment.doctor_name}</p>
+                        <p><strong>Specialty:</strong> {appointment.specialty}</p>
+                        <p><strong>Date:</strong> {new Date(appointment.appointment_date).toLocaleDateString()}</p>
+                        <p><strong>Time:</strong> {appointment.slot_time}</p>
+                        <p><strong>Status:</strong> {appointment.status}</p>
+                      </div>
+                      <button
+                        onClick={() => handleCancelAppointment(appointment.id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      >
+                        Cancel
+                      </button>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p>No appointments found.</p>
+                <p>No scheduled appointments found.</p>
               )}
               <button
                 onClick={() => navigate("/doctors")}

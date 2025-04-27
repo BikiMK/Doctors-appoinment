@@ -15,7 +15,30 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HealthcareBot from "./components/Chatbot";
 
+
+
+
+import { useEffect } from 'react';
+// import { Route } from 'react-router-dom';
+// import Appointment from './pages/Appointment';
+// import MyProfile from './pages/MyProfile';
+import { supabase } from './supabaseClient';
+
 export default function App() {
+
+
+  // eslint-disable-next-line no-undef
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getUser();
+      console.log('App Auth Check:', data);
+    };
+    checkAuth();
+  }, []);
+
+
+
+
   return (
     <div className="mx-4 sm:mx-[10%]">
       <ToastContainer position="top-center" autoClose={5000} />
@@ -39,3 +62,4 @@ export default function App() {
     </div>
   );
 }
+
